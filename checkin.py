@@ -4,7 +4,7 @@ from user import username, password
 from selenium.webdriver.common.action_chains import ActionChains
 
 # set webdriver to chrome
-browser = webdriver.Chrome(executable_path='C:/Users/josep/autocheckin/chromedriver.exe')
+browser = webdriver.Chrome()
 # use the browser object to get the website
 browser.get('https://bootcampspot.com/login')
 
@@ -47,6 +47,7 @@ class BootCampCheckinPage:
     def checkin(self):
         actions = ActionChains(self.browser)
         actions.click(self.checkin_button)
+
 
 if __name__ == '__main__':
     loginpage = BootCampLoginPage(browser)
