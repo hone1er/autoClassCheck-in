@@ -1,7 +1,10 @@
 from time import sleep
 from selenium import webdriver
 from user import username, password
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support import expected_conditions as EC
 
 # set webdriver to chrome
 browser = webdriver.Chrome()
@@ -42,14 +45,30 @@ class BootCampLoginPage:
 class BootCampCheckinPage:
     def __init__(self, browser):
         self.browser = browser
-        self.checkin_button = browser.find_element_by_xpath('//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]')
+        try:
+            # wait 10 seconds for the check-in button xpath element to load
+            element = WebDriverWait(self.browser, 7).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]'))
+            )
+            # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
+            self.checkin_button = browser.find_element_by_xpath('//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]')
+            self.checkin()
+        except Exception:
+            # If the button is not found print a message to the user
+            print("Did not find Check-in button!")
 
     def checkin(self):
-        actions = ActionChains(self.browser)
-        actions.click(self.checkin_button)
+        try:
+            # try to click the check-in button
+            actions = ActionChains(self.browser)
+            actions.click(self.checkin_button)
+        finally:
+            # close the browser
+            browser.quit()
+
 
 
 if __name__ == '__main__':
     loginpage = BootCampLoginPage(browser)
-    checkinpage = loginpage.login(username,password).checkin()
+    checkinpage = loginpage.login(username,password)
 
