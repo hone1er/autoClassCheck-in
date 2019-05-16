@@ -39,7 +39,6 @@ class BootCampLoginPage:
         return BootCampCheckinPage(self.browser)
 
 
-
 class BootCampCheckinPage:
     def __init__(self, browser):
         self.browser = browser
