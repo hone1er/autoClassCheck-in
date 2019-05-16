@@ -20,28 +20,28 @@ in your shell
 - Open user.py in your preferred IDE
 
 - Edit the username and password fields with your login info and save the file
-![](user.PNG)
+![](images/user.PNG)
 
 - Edit the .bat file with the path to your installation of Python and to checkin.py 
 
-![](path.PNG)
+![](images/path.PNG)
 
 - Setup task scheduler to run program at the beginning of class. I had mine run 10 minutes after class starts to account for being late
 
 - First create a new task
-![](createtask.PNG)
+![](images/createtask.PNG)
 
 - Give the task a name
-![](nametask.PNG)
+![](images/nametask.PNG)
 
 - Under triggers, add a schedule for your task. Multiple triggers can be added.
-![](scheduletask.PNG)
+![](images/scheduletask.PNG)
 
 - Set the action as the path to checkin.bat
-![](action.PNG)
+![](images/action.PNG)
 
 - Set any conditions. I set mine to check for the school wifi before running
-![](conditions.PNG)
+![](images/conditions.PNG)
 
 You're all set!
 
