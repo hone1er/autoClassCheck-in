@@ -1,1 +1,0 @@
-"C:\Users\josep\Anaconda3\python.exe" "C:\Users\josep\autocheckin\checkin.py" "C:\Users\josep\autocheckin\user.py"
