@@ -48,27 +48,17 @@ class BootCampCheckinPage:
         try:
             # wait 10 seconds for the check-in button xpath element to load
             element = WebDriverWait(self.browser, 7).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]'))
+            EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
             )
             # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
-            self.checkin_button = browser.find_element_by_xpath('//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]')
-            self.checkin()
+            element.click()
         except Exception:
             # If the button is not found print a message to the user
             print("Did not find Check-in button!")
 
-    def checkin(self):
-        try:
-            # try to click the check-in button
-            actions = ActionChains(self.browser)
-            actions.click(self.checkin_button)
-        finally:
-            # close the browser
-            browser.quit()
-
-
-
+  
 if __name__ == '__main__':
     loginpage = BootCampLoginPage(browser)
     checkinpage = loginpage.login(username,password)
+
 
