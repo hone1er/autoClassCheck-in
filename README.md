@@ -26,7 +26,7 @@ in your shell
 
 ![](images/path.PNG)
 
-- Setup task scheduler to run program at the beginning of class. I had mine run 10 minutes after class starts to account for being late
+- Setup task scheduler to run program at the beginning of class. 
 
 - First create a new task
 ![](images/createtask.PNG)
