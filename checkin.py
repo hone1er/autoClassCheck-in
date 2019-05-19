@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from selenium import webdriver
 from user import username, password
@@ -7,7 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 
 # set webdriver to chrome
-browser = webdriver.Chrome()
+browser = webdriver.Chrome(executable_path=r"{}/chromedriver.exe".format(os.path.dirname(__file__)))
 # use the browser object to get the website
 browser.get('https://bootcampspot.com/login')
 
