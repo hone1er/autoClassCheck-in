@@ -26,7 +26,7 @@ in your shell
 
 ![](images/path.PNG)
 
-- Setup task scheduler to run program at the beginning of class. I had mine run 10 minutes after class starts to account for being late
+- Setup task scheduler to run program at the beginning of class. 
 
 - First create a new task
 ![](images/createtask.PNG)
@@ -55,6 +55,6 @@ You're all set!
 
 Joseph Villavicencio – [@Hone1er](https://twitter.com/hone1er)
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
-
-
+    
+                    GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
