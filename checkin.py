@@ -56,10 +56,9 @@ class BootCampCheckinPage:
         except Exception:
             # If the button is not found print a message to the user
             print("Did not find Check-in button!")
-
   
 if __name__ == '__main__':
     loginpage = BootCampLoginPage(browser)
     checkinpage = loginpage.login(username,password)
-
+    checkinpage.browser.close()
 
