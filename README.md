@@ -17,11 +17,6 @@ pip install -r requirements.txt
 ```
 in your shell
 
-- Open user.py in your preferred IDE
-
-- Edit the username and password fields with your login info and save the file
-![](images/user.PNG)
-
 - Edit the .bat file with the path to your installation of Python and to checkin.py 
 
 ![](images/path.PNG)
@@ -42,6 +37,8 @@ in your shell
 
 - Set any conditions. I set mine to check for the school wifi before running
 ![](images/conditions.PNG)
+
+The first time the program runs you will be asked for your username/email and password. You will only be asked for this info once.
 
 You're all set!
 
