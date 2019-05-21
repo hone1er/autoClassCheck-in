@@ -7,8 +7,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 
-# set webdriver to chrome
-browser = webdriver.Chrome(executable_path=r"{}/chromedriver.exe".format(os.path.dirname(__file__)))
+# set webdriver to chrome. Try for mac, except for PC
+try:
+    browser = webdriver.Chrome(executable_path=r"{}/chromedriver".format(os.path.dirname(__file__)))
+except:
+    browser = webdriver.Chrome(executable_path=r"{}/chromedriver.exe".format(os.path.dirname(__file__)))
+
 # use the browser object to get the website
 browser.get('https://bootcampspot.com/login')
 
@@ -55,7 +59,8 @@ class BootCampCheckinPage:
             element.click()
         except Exception:
             # If the button is not found print a message to the user
-            print("Did not find Check-in button!")
+            print("""WARNING: Did not find Check-in button! 
+If you have not already checked-in, please re-run program or check-in manually""")
   
 if __name__ == '__main__':
     loginpage = BootCampLoginPage(browser)
