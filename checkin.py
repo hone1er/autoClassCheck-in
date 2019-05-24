@@ -1,8 +1,9 @@
 import os
-import base64
 from time import sleep
 from selenium import webdriver
+from flask_bcrypt import Bcrypt
 from user import username, password
+from cryptography.fernet import Fernet
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -17,21 +18,23 @@ class Setup:
             self.username = input("Please Enter Your Username/Email. You will only be asked for your login info once: ")
             with open('user.py', 'w') as file:
                 file.write(f'username = "{self.username}"\n')
-                file.write(f'password = "{self.password}"\n')
-        if self.password == None:
-            self.password = input("Please Enter Your Password: ")
+                file.write(f'password = {self.password}\n')
+        if self.password == None or self.password == "None":
+            self.password = self.cipher_suite.encrypt(bytes(input("Please Enter Your Password: ").encode()))
             with open('user.py', 'w') as file:
                 file.write(f'username = "{self.username}"\n')
                 file.write(f'password = "{self.password}"\n')
         # set webdriver to chrome. Try for mac, except for PC
+        self.key = b'pRmgMa8T0INjEAfksaq2aafzoZXEuwKI7wDe4c1F8AY='
+        self.cipher_suite = Fernet(self.key)
         try:
-            self.browser = webdriver.Chrome(executable_path=r"{}/chromedriver".format(os.path.dirname(__file__)))
+            self.browser = webdriver.Chrome(executable_path=r"{}/chromedrivers/chromedriver".format(os.path.dirname(__file__)))
         except:
-            self.browser = webdriver.Chrome(executable_path=r"{}/chromedriver.exe".format(os.path.dirname(__file__)))
+            self.browser = webdriver.Chrome(executable_path=r"{}/chromedrivers/chromedriver.exe".format(os.path.dirname(__file__)))
 
 class BootCampLoginPage:
-    def __init__(self, setup, browser):
-        self.browser = browser
+    def __init__(self, setup):
+        self.browser = setup.browser
         # use the browser object to get the website
         self.browser.get('https://bootcampspot.com/login')
         # username element
@@ -40,6 +43,7 @@ class BootCampLoginPage:
         self.pwbox = self.browser.find_element_by_xpath('//*[@id="password"]')
         # sign in button
         self.sign_in_button = self.browser.find_element_by_xpath('//*[@id="root"]/div/section/div/div[2]/button')
+        setup.password = setup.cipher_suite.decrypt(setup.password).decode("utf-8")
 
     def login(self, username, password):
         # Action chain
@@ -60,7 +64,6 @@ class BootCampLoginPage:
         actions.perform()
         return BootCampCheckinPage(self.browser)
 
-
 class BootCampCheckinPage:
     def __init__(self, browser):
         self.browser = browser
@@ -78,7 +81,7 @@ If you have not already checked-in, please re-run program or check-in manually''
   
 if __name__ == '__main__':
     setup = Setup()
-    loginpage = BootCampLoginPage(setup, setup.browser)
+    loginpage = BootCampLoginPage(setup)
     checkinpage = loginpage.login(username,password)
     checkinpage.browser.close()
 
