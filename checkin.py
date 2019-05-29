@@ -101,7 +101,7 @@ class BootCampCheckinPage:
                 actions.move_to_element(self.submit)
                 actions.click(self.submit)
                 # Click Thank you!
-                self.thanks = self.browser.find_element_by_xpath('//*[@id="main-content"]/div[2]/section/div/div/div/div/button')
+                self.thanks = self.browser.find_element_by_xpath('//*[@id="main-content"]/div[2]/div/button')
                 actions.move_to_element(self.thanks)
                 actions.click(self.thanks)
                 actions.perform()
@@ -111,7 +111,7 @@ class BootCampCheckinPage:
                 print('''WARNING: Could not complete survey''')
             ##### check the sessions page for a checkin button before printing the exception
         try:
-            # wait 5 seconds for the check-in button xpath element to load
+            # wait 3 seconds for the check-in button xpath element to load
             element = WebDriverWait(self.browser, 3).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
             )
@@ -130,11 +130,8 @@ If you have not already checked-in, please re-run program or check-in manually''
         return True
 
         
-
-  
 if __name__ == '__main__':
     setup = Setup()
     loginpage = BootCampLoginPage(setup)
     checkinpage = loginpage.login(username,password)
     checkinpage.browser.close()
-
