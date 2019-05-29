@@ -6,8 +6,12 @@ from user import username, password
 from cryptography.fernet import Fernet
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException        
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
+
+
+
 
 
 class Setup:
@@ -67,9 +71,48 @@ class BootCampLoginPage:
 class BootCampCheckinPage:
     def __init__(self, browser):
         self.browser = browser
+        sleep(2)
+        # if asked to do a survey, auto-fill it
+        if self.check_exists_by_xpath('//*[@id="main-content"]/div[2]/section/div/div/div/button') == True:  
+            try:
+                # wait 10 seconds for the check-in button xpath element to load
+                element = WebDriverWait(self.browser, 1).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div/div/button'))
+                )
+                # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
+                element.click()
+                for i in range(15, 23):
+                    element = WebDriverWait(self.browser, 1).until(
+                    EC.presence_of_element_located((By.XPATH, f'//*[@id="{i}-4"]')))
+                    element.click()
+                # 10 hours outside of class studying
+                actions = ActionChains(self.browser)
+                self.additionalHours = self.browser.find_element_by_xpath('//*[@id="23"]')
+                actions.move_to_element(self.additionalHours)
+                actions.click(self.additionalHours)
+                actions.send_keys('10')
+                # add additional learning
+                self.additionalLearning = self.browser.find_element_by_xpath('//*[@id="24"]')
+                actions.move_to_element(self.additionalLearning)
+                actions.click(self.additionalLearning)
+                actions.send_keys('Additional learning')
+                # click submit                
+                self.submit = self.browser.find_element_by_xpath('//*[@id="main-content"]/div[2]/section/div/div/form/div/div/button')
+                actions.move_to_element(self.submit)
+                actions.click(self.submit)
+                # Click Thank you!
+                self.thanks = self.browser.find_element_by_xpath('//*[@id="main-content"]/div[2]/section/div/div/div/div/button')
+                actions.move_to_element(self.thanks)
+                actions.click(self.thanks)
+                actions.perform()
+
+            except Exception:
+                # If the button is not found print a message to the user
+                print('''WARNING: Could not complete survey''')
+            ##### check the sessions page for a checkin button before printing the exception
         try:
-            # wait 10 seconds for the check-in button xpath element to load
-            element = WebDriverWait(self.browser, 7).until(
+            # wait 5 seconds for the check-in button xpath element to load
+            element = WebDriverWait(self.browser, 3).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
             )
             # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
@@ -78,6 +121,16 @@ class BootCampCheckinPage:
             # If the button is not found print a message to the user
             print('''WARNING: Did not find Check-in button! 
 If you have not already checked-in, please re-run program or check-in manually''')
+
+    def check_exists_by_xpath(self, xpath):
+        try:
+            self.browser.find_element_by_xpath(xpath)
+        except NoSuchElementException:
+            return False
+        return True
+
+        
+
   
 if __name__ == '__main__':
     setup = Setup()
