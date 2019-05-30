@@ -117,6 +117,7 @@ class BootCampCheckinPage:
             )
             # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
             element.click()
+            print('''Check-in COMPLETE!''')
         except Exception:
             # If the button is not found print a message to the user
             print('''WARNING: Did not find Check-in button! 
