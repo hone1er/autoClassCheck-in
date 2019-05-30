@@ -1,5 +1,7 @@
 import os
+import tkinter as tk
 from time import sleep
+from tkinter import ttk
 from selenium import webdriver
 from flask_bcrypt import Bcrypt
 from user import username, password
@@ -9,8 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException        
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
-
-
 
 
 
@@ -108,20 +108,21 @@ class BootCampCheckinPage:
 
             except Exception:
                 # If the button is not found print a message to the user
-                print('''WARNING: Could not complete survey''')
+                self.popupmsg("""WARNING: Could not complete survey! 
+If you have not already checked-in, please re-run program or check-in manually""")
             ##### check the sessions page for a checkin button before printing the exception
         try:
             # wait 3 seconds for the check-in button xpath element to load
-            element = WebDriverWait(self.browser, 3).until(
+            element = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
             )
             # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
             element.click()
-            print('''Check-in COMPLETE!''')
+            self.popupmsg("Check-in COMPLETE!!")
         except Exception:
             # If the button is not found print a message to the user
-            print('''WARNING: Did not find Check-in button! 
-If you have not already checked-in, please re-run program or check-in manually''')
+            self.popupmsg("""WARNING: Did not find Check-in button! 
+If you have not already checked-in, please re-run program or check-in manually""")
 
     def check_exists_by_xpath(self, xpath):
         try:
@@ -130,9 +131,24 @@ If you have not already checked-in, please re-run program or check-in manually''
             return False
         return True
 
+    def popupmsg(self, msg):
+        self.browser.close()
+        self.popup = tk.Tk()
+        self.popup.wm_title("Check-in Status")
+        label = ttk.Label(self.popup, text=msg, font=("Verdana", 10))
+        label.pack(side="top", fill="x", pady=10)
+        B1 = ttk.Button(self.popup, text="Okay", command = self.buttoncmd)
+        B1.pack()
+        self.popup.mainloop()
+
+    def buttoncmd(self):
+        self.popup.destroy()
+        quit()
+
         
 if __name__ == '__main__':
     setup = Setup()
     loginpage = BootCampLoginPage(setup)
     checkinpage = loginpage.login(username,password)
-    checkinpage.browser.close()
+
+  
