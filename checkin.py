@@ -4,7 +4,6 @@ from tkinter import *
 from time import sleep
 from tkinter import ttk
 from selenium import webdriver
-from flask_bcrypt import Bcrypt
 import tkinter.messagebox as tm
 from user import username, pw
 from cryptography.fernet import Fernet
@@ -15,7 +14,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 
 
-
+# initial bootcampspot.com page
 class BootCampLoginPage:
     def __init__(self, setup):
         self.setup = setup 
@@ -63,6 +62,7 @@ class BootCampLoginPage:
         return BootCampCheckinPage(self.browser)
 
         
+# this webpage contains the check-in button
 class BootCampCheckinPage:
     def __init__(self, browser):
         self.browser = browser
@@ -103,8 +103,9 @@ class BootCampCheckinPage:
 
             except Exception:
                 # If the survey is not completed print a message to the user
-                msg = Popup("""WARNING: Could not complete survey! 
-If you have not already checked-in, please re-run program or check-in manually""")
+                msg = Popup("WARNING: Could not complete survey! \
+                            If you have not already checked-in, \
+                            please re-run program or check-in manually")
             ##### check the sessions page for a checkin button before printing the exception
         try:
             # wait 2 seconds for the check-in button xpath element to load
@@ -116,8 +117,9 @@ If you have not already checked-in, please re-run program or check-in manually""
             msg = Popup("Check-in COMPLETE!!")
         except Exception:
             # If the button is not found print a message to the user
-            msg = Popup("""WARNING: Did not find Check-in button! 
-If you have not already checked-in, please re-run program or check-in manually""")
+            msg = Popup("""WARNING: Did not find Check-in button! \
+                        If you have not already checked-in, \
+                        please re-run program or check-in manually""")
 
     def check_exists_by_xpath(self, xpath):
         try:
@@ -126,6 +128,7 @@ If you have not already checked-in, please re-run program or check-in manually""
             return False
         return True
 
+# setup for the user and webdriver
 class Setup:
     def __init__(self):
         self.username = username
@@ -143,6 +146,7 @@ class Setup:
         except:
             self.browser = webdriver.Chrome(executable_path=r"{}/chromedrivers/chromedriver.exe".format(os.path.dirname(__file__)))
 
+# Login popup if username or pw needs to be input. 
 class LoginFrame(Frame):
     def __init__(self, master, setup):
         super().__init__(master)
@@ -167,14 +171,13 @@ class LoginFrame(Frame):
     def _login_btn_clicked(self):
         # print("Clicked")
         self.setup.username = self.entry_username.get()
-
         self.setup.pw = self.setup.driver_suite.encrypt(bytes(self.entry_password.get().encode('utf-8')))
         with open('user.py', 'w') as file:
             file.write(f'username = "{self.setup.username}"\n')
             file.write(f'pw = {self.setup.pw}\n')
         self.master.destroy()
         
-
+# popup for warnings and success messages
 class Popup:
     def __init__(self, msg):
         self.popup = tk.Tk()
