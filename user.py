@@ -1,2 +1,2 @@
-username = 'username/emai'
-password = 'password'
+username = None
+pw = None
