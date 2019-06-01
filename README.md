@@ -44,7 +44,8 @@ You're all set!
 
 
 ## Release History
-
+* 0.9
+   * Added GUI
 * 0.0.1
     * Work in progress
 
