@@ -1,3 +1,5 @@
+#! python3
+
 import os
 import tkinter as tk
 from tkinter import *
@@ -86,11 +88,13 @@ class BootCampCheckinPage:
                         (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div/div/button'))
                 )
                 element.click()
+
                 # for each survey question answer with 4 out of 5
                 for i in range(15, 23):
                     element = WebDriverWait(self.browser, 1).until(
                         EC.presence_of_element_located((By.XPATH, f'//*[@id="{i}-4"]')))
                     element.click()
+
                 # 10 hours outside of class studying
                 actions = ActionChains(self.browser)
                 self.additionalHours = self.browser.find_element_by_xpath(
@@ -98,17 +102,20 @@ class BootCampCheckinPage:
                 actions.move_to_element(self.additionalHours)
                 actions.click(self.additionalHours)
                 actions.send_keys('10')
+
                 # add additional learning
                 self.additionalLearning = self.browser.find_element_by_xpath(
                     '//*[@id="24"]')
                 actions.move_to_element(self.additionalLearning)
                 actions.click(self.additionalLearning)
                 actions.send_keys('Additional learning')
+
                 # click submit
                 self.submit = self.browser.find_element_by_xpath(
                     '//*[@id="main-content"]/div[2]/section/div/div/form/div/div/button')
                 actions.move_to_element(self.submit)
                 actions.click(self.submit)
+
                 # Click Thank you!
                 self.thanks = self.browser.find_element_by_xpath(
                     '//*[@id="main-content"]/div[2]/div/button')
@@ -140,14 +147,29 @@ class BootCampCheckinPage:
     def remoteAttendance(self):
         try:
             # wait 2 seconds for the check-in button xpath element to load
-            element = WebDriverWait(self.browser, 2).until(
+            remote = WebDriverWait(self.browser, 2).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
+                    (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[2]/a'))
             )
             # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
-            element.click()
+            remote.click()
+
  # check if anything else needs to be clicked after remote attendance
-            msg = Popup("Check-in COMPLETE!!")
+            checkbox = WebDriverWait(self.browser, 2).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//*[@id="agree"]'))
+            )
+            # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
+            checkbox.click()
+
+            confirm = WebDriverWait(self.browser, 2).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//*[@id="main-content"]/div[2]/section/div[2]/div[3]/div/button[1]'))
+            )
+            confirm.click()
+
+            msg = Popup("Remote Request COMPLETE!!")
+
         except Exception:
             # If the button is not found print a message to the user
             msg = Popup(
@@ -177,13 +199,14 @@ class Setup:
             self.popup, text="Request Remote attendance", command=self.remote)
         B1.pack()
         B2.pack()
-#       B3.pack() #### uncomment when BootCampCheckin.remoteAttendance() is finished
+        B3.pack()
         self.popup.mainloop()
 
         self.username = username
         self.pw = pw
         self.driver = b'pRmgMa8T0INjEAfksaq2aafzoZXEuwKI7wDe4c1F8AY='
         self.driver_suite = Fernet(self.driver)
+
         # if there is no username or password open a dialog box that request username and password
         if self.username == None or self.pw == None:
             root = Tk()
@@ -192,14 +215,14 @@ class Setup:
 
     def remote(self):
         self.popup.destroy()
-        self.attendance = 'present'
+        self.attendance = 'remote'
 
     def no(self):
         self.popup.destroy()
         quit()
 
     def yes(self):
-        self.attendance = 'remote'
+        self.attendance = 'present'
         self.popup.destroy()
 
 # Login popup if username or pw needs to be input.
@@ -230,7 +253,6 @@ class LoginFrame(Frame):
         self.pack()
 
     def _login_btn_clicked(self):
-        # print("Clicked")
         self.setup.username = self.entry_username.get()
         self.setup.pw = self.setup.driver_suite.encrypt(
             bytes(self.entry_password.get().encode('utf-8')))
