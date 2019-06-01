@@ -129,7 +129,7 @@ class BootCampCheckinPage:
                     "WARNING: Could not complete survey! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
 
     # check the sessions page for a checkin button before printing the exception
-    def checkin(self):
+    def present(self):
         try:
             # wait 2 seconds for the check-in button xpath element to load
             element = WebDriverWait(self.browser, 2).until(
@@ -284,7 +284,7 @@ if __name__ == '__main__':
         loginpage = BootCampLoginPage(setup)
         checkinpage = loginpage.login(username, pw)
         if setup.attendance == 'present':
-            checkinpage.checkin()
+            checkinpage.present()
             loginpage.browser.close()
         elif setup.attendance == 'remote':
             checkinpage.remoteAttendance()
