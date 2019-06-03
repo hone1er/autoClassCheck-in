@@ -115,19 +115,18 @@ class BootCampCheckinPage:
                     '//*[@id="main-content"]/div[2]/section/div/div/form/div/div/button')
                 actions.move_to_element(self.submit)
                 actions.click(self.submit)
-
-                # Click Thank you!
-                self.thanks = self.browser.find_element_by_xpath(
-                    '//*[@id="main-content"]/div[2]/div/button')
-                actions.move_to_element(self.thanks)
-                actions.click(self.thanks)
                 actions.perform()
+                # Click Thank you!
+                element = WebDriverWait(self.browser, 2).until(
+                        EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/div/button')))
+                element.click()
+
 
             except Exception:
                 # If the survey is not completed print a message to the user
                 msg = Popup(
                     "WARNING: Could not complete survey! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
-
+                
     # check the sessions page for a checkin button before printing the exception
     def present(self):
         try:
