@@ -2,16 +2,14 @@
 
 import os
 import tkinter as tk
-from tkinter import *
-from time import sleep
 from tkinter import ttk
-from selenium import webdriver
-import tkinter.messagebox as tm
+from time import sleep
 from user import username, pw
-from cryptography.fernet import Fernet
+from selenium import webdriver
+from popups import Popup, LoginFrame, Setup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementNotVisibleException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -116,32 +114,76 @@ class BootCampCheckinPage:
                 actions.move_to_element(self.submit)
                 actions.click(self.submit)
                 actions.perform()
+                sleep(1)
                 # Click Thank you!
                 element = WebDriverWait(self.browser, 2).until(
-                        EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/div/button')))
+                    EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/div/button')))
                 element.click()
-
 
             except Exception:
                 # If the survey is not completed print a message to the user
                 msg = Popup(
                     "WARNING: Could not complete survey! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
-                
+
     # check the sessions page for a checkin button before printing the exception
     def present(self):
-        try:
-            # wait 2 seconds for the check-in button xpath element to load
-            element = WebDriverWait(self.browser, 2).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
-            )
-            # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
-            element.click()
-            msg = Popup("Check-in COMPLETE!!")
-        except Exception:
-            # If the button is not found print a message to the user
-            msg = Popup(
-                "WARNING: Did not find Check-in button! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
+        if self.check_exists_by_xpath('//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a') == True:
+            try:
+                # Try to find the checkin button on the home page
+                # wait 2 seconds for the check-in button xpath element to load
+                element = WebDriverWait(self.browser, 2).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
+                )
+                # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
+                element.click()
+                msg = Popup("Check-in COMPLETE!!")
+            except TimeoutException:
+                msg = Popup(
+                    "WARNING: Did not find Check-in button! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
+        else:
+            try:
+                # if the browser is full screen
+                element = WebDriverWait(self.browser, 1).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//*[@id="root"]/div/nav/div[2]/nav/ul/li[2]/a'))
+                )
+                # the browser finds the element for the sessions, set it to the variable checkin_button and run the checkin method
+                element.click()
+                sleep(.5)
+                # find check-in element
+                checkInElement = WebDriverWait(self.browser, 2).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[1]/div[3]/div/div[3]/ul/li[3]/a'))
+                )
+                checkInElement.click()
+            except ElementNotVisibleException:
+                try:
+                    # if the browser is small
+                    navelement = WebDriverWait(self.browser, 2).until(
+                        EC.presence_of_element_located(
+                            (By.XPATH, '//*[@id="root"]/div/div[1]'))
+                    )
+                    # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
+                    navelement.click()
+                    sleep(1)
+                    sessions = self.browser.find_element_by_xpath(
+                        '//*[@id="root"]/div/nav/div[2]/nav/ul/li[2]/a')
+                    actions = ActionChains(self.browser)
+                    actions.move_to_element(sessions)
+                    actions.click(sessions)
+                    actions.perform()
+
+                    sleep(2)
+                    checkInElement = WebDriverWait(self.browser, 1).until(
+                        EC.presence_of_element_located(
+                            (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[1]/div[3]/div/div[3]/ul/li[3]/a'))
+                    )
+                    checkInElement.click()
+                    msg = Popup("Check-in COMPLETE!!")
+                except TimeoutException:
+                    msg = Popup(
+                        "WARNING: Did not find Check-in button! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
 
     def remoteAttendance(self):
         try:
@@ -180,102 +222,6 @@ class BootCampCheckinPage:
         except NoSuchElementException:
             return False
         return True
-
-
-class Setup:
-    ''' setup for user and web driver '''
-
-    def __init__(self):
-        # Pop up and buttons asking if student is in class, not in class, or attending remotely
-        self.popup = tk.Tk()
-        self.popup.wm_title("Are you in class??")
-        label = ttk.Label(
-            self.popup, text="Are you currently in class & connected to wifi?", font=("Verdana", 10))
-        label.pack(side="top", fill="x", pady=10)
-        B1 = ttk.Button(self.popup, text="Yes", command=self.yes)
-        B2 = ttk.Button(self.popup, text="No", command=self.no)
-        B3 = ttk.Button(
-            self.popup, text="Request Remote attendance", command=self.remote)
-        B1.pack()
-        B2.pack()
-        B3.pack()
-        self.popup.mainloop()
-
-        self.username = username
-        self.pw = pw
-        self.driver = b'pRmgMa8T0INjEAfksaq2aafzoZXEuwKI7wDe4c1F8AY='
-        self.driver_suite = Fernet(self.driver)
-
-        # if there is no username or password open a dialog box that request username and password
-        if self.username == None or self.pw == None:
-            root = Tk()
-            lf = LoginFrame(root, self)
-            root.mainloop()
-
-    def remote(self):
-        self.popup.destroy()
-        self.attendance = 'remote'
-
-    def no(self):
-        self.popup.destroy()
-        quit()
-
-    def yes(self):
-        self.attendance = 'present'
-        self.popup.destroy()
-
-# Login popup if username or pw needs to be input.
-
-
-class LoginFrame(Frame):
-    ''' popup that request username and password if there is none available or it is incorrect '''
-
-    def __init__(self, master, setup):
-        super().__init__(master)
-        self.master = master
-        self.setup = setup
-        self.label_username = Label(self, text="Username")
-        self.label_password = Label(self, text="Password")
-
-        self.entry_username = Entry(self)
-        self.entry_password = Entry(self, show="*")
-
-        self.label_username.grid(row=0, sticky=E)
-        self.label_password.grid(row=1, sticky=E)
-        self.entry_username.grid(row=0, column=1)
-        self.entry_password.grid(row=1, column=1)
-
-        self.logbtn = Button(self, text="Login",
-                             command=self._login_btn_clicked)
-        self.logbtn.grid(columnspan=2)
-
-        self.pack()
-
-    def _login_btn_clicked(self):
-        self.setup.username = self.entry_username.get()
-        self.setup.pw = self.setup.driver_suite.encrypt(
-            bytes(self.entry_password.get().encode('utf-8')))
-        with open('user.py', 'w') as file:
-            file.write(f'username = "{self.setup.username}"\n')
-            file.write(f'pw = {self.setup.pw}\n')
-        self.master.destroy()
-
-
-class Popup:
-    ''' popup for warnings and success messages '''
-
-    def __init__(self, msg):
-        self.popup = tk.Tk()
-        self.popup.wm_title("Check-in Status")
-        label = ttk.Label(self.popup, text=msg, font=("Verdana", 10))
-        label.pack(side="top", fill="x", pady=10)
-        B1 = ttk.Button(self.popup, text="Okay", command=self.buttoncmd)
-        B1.pack()
-        self.popup.mainloop()
-
-    def buttoncmd(self):
-        self.popup.destroy()
-
 
 if __name__ == '__main__':
     setup = Setup()
