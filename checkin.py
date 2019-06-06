@@ -126,15 +126,12 @@ class BootCampCheckinPage:
                     "WARNING: Could not complete survey! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
 
     # check the sessions page for a checkin button before printing the exception
-    def present(self):
-        if self.check_exists_by_xpath('//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a') == True:
+    def login(self, attendance):
+        if self.check_exists_by_xpath(f"//*[contains(text(), '{attendance}')]") == True:
             try:
                 # Try to find the checkin button on the home page
                 # wait 2 seconds for the check-in button xpath element to load
-                element = WebDriverWait(self.browser, 2).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[3]/a'))
-                )
+                element =self.browser.find_element_by_partial_link_text(f'{attendance}')
                 # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
                 element.click()
                 msg = Popup("Check-in COMPLETE!!")
@@ -152,10 +149,7 @@ class BootCampCheckinPage:
                 element.click()
                 sleep(.5)
                 # find check-in element
-                checkInElement = WebDriverWait(self.browser, 2).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[1]/div[3]/div/div[3]/ul/li[3]/a'))
-                )
+                checkInElement = self.browser.find_element_by_partial_link_text(f'{attendance}')
                 checkInElement.click()
             except ElementNotVisibleException:
                 try:
@@ -175,46 +169,12 @@ class BootCampCheckinPage:
                     actions.perform()
 
                     sleep(2)
-                    checkInElement = WebDriverWait(self.browser, 1).until(
-                        EC.presence_of_element_located(
-                            (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[1]/div[3]/div/div[3]/ul/li[3]/a'))
-                    )
-                    checkInElement.click()
+                    checkInElement = self.browser.find_element_by_partial_link_text(f'{attendance}')
+                    #checkInElement.click()
                     msg = Popup("Check-in COMPLETE!!")
-                except TimeoutException:
+                except Exception:
                     msg = Popup(
                         "WARNING: Did not find Check-in button! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
-
-    def remoteAttendance(self):
-        try:
-            # wait 2 seconds for the check-in button xpath element to load
-            remote = WebDriverWait(self.browser, 2).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div[4]/div/div/div/div[3]/ul/li[2]/a'))
-            )
-            # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
-            remote.click()
-
- # check if anything else needs to be clicked after remote attendance
-            checkbox = WebDriverWait(self.browser, 2).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="agree"]'))
-            )
-            # the browser finds the element for checkin, set it to the variable checkin_button and run the checkin method
-            checkbox.click()
-
-            confirm = WebDriverWait(self.browser, 2).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="main-content"]/div[2]/section/div[2]/div[3]/div/button[1]'))
-            )
-            confirm.click()
-
-            msg = Popup("Remote Request COMPLETE!!")
-
-        except Exception:
-            # If the button is not found print a message to the user
-            msg = Popup(
-                "WARNING: Did not find Check-in button! \nIf you have not already checked-in, \nplease re-run program or check-in manually")
 
     def check_exists_by_xpath(self, xpath):
         try:
@@ -229,9 +189,9 @@ if __name__ == '__main__':
         loginpage = BootCampLoginPage(setup)
         checkinpage = loginpage.login(username, pw)
         if setup.attendance == 'present':
-            checkinpage.present()
+            checkinpage.login('Check In To Class')
             loginpage.browser.close()
         elif setup.attendance == 'remote':
-            checkinpage.remoteAttendance()
+            checkinpage.login('Request Remote Attendance')
             loginpage.browser.close()
     quit()
