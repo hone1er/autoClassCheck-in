@@ -168,9 +168,9 @@ class BootCampCheckinPage:
                     actions.click(sessions)
                     actions.perform()
 
-                    sleep(2)
+                    sleep(1)
                     checkInElement = self.browser.find_element_by_partial_link_text(f'{attendance}')
-                    #checkInElement.click()
+                    checkInElement.click()
                     msg = Popup("Check-in COMPLETE!!")
                 except Exception:
                     msg = Popup(
