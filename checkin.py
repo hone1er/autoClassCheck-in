@@ -188,6 +188,7 @@ if __name__ == '__main__':
     if hasattr(setup, 'attendance'):
         loginpage = BootCampLoginPage(setup)
         checkinpage = loginpage.login(username, pw)
+        sleep(1)
         if setup.attendance == 'present':
             checkinpage.login('Check In To Class')
             loginpage.browser.close()
