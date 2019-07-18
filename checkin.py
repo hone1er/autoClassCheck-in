@@ -78,12 +78,13 @@ class BootCampCheckinPage:
         self.browser = browser
         sleep(2)
         # if asked to do a survey, auto-fill it
-        if self.check_exists_by_xpath('//*[@id="main-content"]/div[2]/section/div/div/div/button') == True:
+        surveyButton = '//*[@id="main-content"]/div/section/div/div/div/button'
+        if self.check_exists_by_xpath(surveyButton) == True:
             try:
                 # wait 2 seconds for the take survey button xpath element to load then click it
                 element = WebDriverWait(self.browser, 2).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, '//*[@id="main-content"]/div[2]/section/div/div/div/button'))
+                        (By.XPATH, surveyButton))
                 )
                 element.click()
 
@@ -119,6 +120,7 @@ class BootCampCheckinPage:
                 element = WebDriverWait(self.browser, 2).until(
                     EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[2]/div/button')))
                 element.click()
+                sleep(1)
 
             except Exception:
                 # If the survey is not completed print a message to the user
@@ -188,7 +190,6 @@ if __name__ == '__main__':
     if hasattr(setup, 'attendance'):
         loginpage = BootCampLoginPage(setup)
         checkinpage = loginpage.login(username, pw)
-        sleep(1)
         if setup.attendance == 'present':
             checkinpage.login('Check In To Class')
             loginpage.browser.close()

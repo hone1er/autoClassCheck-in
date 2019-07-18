@@ -1,1 +1,1 @@
-"C:\path\to\python.exe" "C:\path\to\autoClassCheck-in\checkin.py"
+"C:\Users\josep\Anaconda3\python.exe" "C:\Users\josep\autoClassCheck-in\checkin.py"

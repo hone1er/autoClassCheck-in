@@ -42,6 +42,8 @@ The first time the program runs you will be asked for your username/email and pa
 
 You're all set!
 
+![](images/popup1.PNG)
+
 
 ## Release History
 * 0.9
