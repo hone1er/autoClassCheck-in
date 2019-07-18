@@ -40,9 +40,10 @@ in your shell
 
 The first time the program runs you will be asked for your username/email and password. You will only be asked for this info once.
 
+![](images/popup1.PNG)
+
 You're all set!
 
-![](images/popup1.PNG)
 
 
 ## Release History
