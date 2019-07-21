@@ -39,8 +39,8 @@ in your shell
 ![](images/conditions.PNG)
 
 The first time the program runs you will be asked for your username/email and password. You will only be asked for this info once.
-
-![](images/popup1.PNG)
+After that, you'll receive this popup when it's time to check-in to class.
+![](images/popup1.png)
 
 You're all set!
 
